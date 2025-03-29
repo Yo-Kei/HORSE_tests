@@ -7,8 +7,6 @@ import networkx as nx
 import seaborn as sns
 import re
 import copy
-import os
-import warnings
 from utils import compute_penalty, find_fad_lad
 
 

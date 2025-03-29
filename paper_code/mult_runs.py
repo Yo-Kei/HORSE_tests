@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import pearsonr, kendalltau, linregress
 from utils import find_fad_lad, prepare_misfit, compute_misfit, compute_penalty, build_event_seq, separate_horizons
-import warnings
 from sklearn.metrics import pairwise_distances
 import scipy
 from scipy.spatial.distance import squareform
