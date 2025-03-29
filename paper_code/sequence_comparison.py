@@ -507,11 +507,11 @@ def compare_range(
 
 def main():
     ## Pseudo data
-    ha_path = r"Pseudo_ha_v6.csv"
+    ha_path = r"paper_data/Pseudo_ha_v6.csv"
     ha_df = pd.read_csv(ha_path, encoding="utf_8_sig")
     true_data = ha_df.sort_values('Horizon')['Horizon'].to_numpy()
     # CONOP
-    extra_conop_df_path = r"Pseudo_ha_v6_cpp_conop_df.csv"
+    extra_conop_df_path = r"paper_data/Pseudo_ha_v6_cpp_conop_df.csv"
     compare_type = "horse-conop"
     computed_data_by_conop_pp = pd.read_csv(extra_conop_df_path, encoding="utf_8_sig")[
         "Event id"
@@ -530,7 +530,7 @@ def main():
     range_fig.savefig("paper_figs/pseudo_ha_v6_CONOP_taxon_range.svg")
     dist_fig.savefig("paper_figs/pseudo_ha_v6_CONOP_taxon_range_distr.svg")
     # CONOP + Teaser
-    extra_conop_df_path = r"Pseudo_ha_v6_cpp_teaser_conop_df.csv"
+    extra_conop_df_path = r"paper_data/Pseudo_ha_v6_cpp_teaser_conop_df.csv"
     computed_data_by_conop_pp = pd.read_csv(extra_conop_df_path, encoding="utf_8_sig")[
         "Event id"
     ]
@@ -549,7 +549,7 @@ def main():
     range_fig.savefig("paper_figs/pseudo_ha_v6_CONOP_Teaser_taxon_range.svg")
     dist_fig.savefig("paper_figs/pseudo_ha_v6_CONOP_Teaser_taxon_range_distr.svg")
     # HORSE
-    horizon_id_path = r"Pseudo_ha_v6-id.csv"
+    horizon_id_path = r"paper_data/Pseudo_ha_v6-id.csv"
     compare_type = "horse-horse"
     data_computed = pd.read_csv(horizon_id_path)
     sequence_names = ["Ground Truth", "HORSE"]
@@ -566,7 +566,7 @@ def main():
     range_fig.savefig("paper_figs/pseudo_ha_v6_HORSE_taxon_range.svg")
     dist_fig.savefig("paper_figs/pseudo_ha_v6_HORSE_taxon_range_distr.svg")
     # HORSE + Teaser
-    horizon_id_path = r"Pseudo_ha_v6-teaser_id.csv"
+    horizon_id_path = r"paper_data/Pseudo_ha_v6-teaser_id.csv"
     compare_type = "horse-horse"
     data_computed = pd.read_csv(horizon_id_path)
     sequence_names = ["Ground Truth", "HORSE + Teaser"]
@@ -583,31 +583,31 @@ def main():
     range_fig.savefig("paper_figs/pseudo_ha_v6_HORSE_Teaser_taxon_range.svg")
     dist_fig.savefig("paper_figs/pseudo_ha_v6_HORSE_Teaser_taxon_range_distr.svg")
 
-    ## dyy data
-    ha_path = r"DYY2_ha_output_temp.csv"
-    ha_df = pd.read_csv(ha_path, encoding="utf_8_sig")
-    sequence1_path = r'DYY2_cpp_teaser_conop_df.csv'
-    sequence1 = pd.read_csv(sequence1_path, encoding='utf_8_sig')
+    ## dyy data (not provided)
+    # ha_path = r"DYY2_ha_output_temp.csv"
+    # ha_df = pd.read_csv(ha_path, encoding="utf_8_sig")
+    # sequence1_path = r'DYY2_cpp_teaser_conop_df.csv'
+    # sequence1 = pd.read_csv(sequence1_path, encoding='utf_8_sig')
 
-    sequence2_path = r'DYY2_ha_output_temp.csv'
-    sequence2 = pd.read_csv(sequence2_path, encoding='utf_8_sig')
-    sequence2 = sequence2.sort_values('Score')['Horizon'].to_numpy()
+    # sequence2_path = r'DYY2_ha_output_temp.csv'
+    # sequence2 = pd.read_csv(sequence2_path, encoding='utf_8_sig')
+    # sequence2 = sequence2.sort_values('Score')['Horizon'].to_numpy()
 
-    sequence_names = ["CONOP + Teaser", "HORSE + Teaser"]
+    # sequence_names = ["CONOP + Teaser", "HORSE + Teaser"]
     
-    compare_type = 'conop-horse'
-    range_fig, dist_fig = compare_range(
-        ha_df=ha_df,
-        sequences=[sequence1["Event id"], sequence2],
-        compare_type=compare_type,
-        arrangement='fad',
-        show_taxon_names=False,
-        sequence_names=sequence_names,
-        colors=['#f07167', '#0081a7'],
-        legend_loc='upper left'
-    )
-    range_fig.savefig("paper_figs/DYY2_taxon_range.svg")
-    dist_fig.savefig("paper_figs/DYY2_taxon_range_distr.svg")
+    # compare_type = 'conop-horse'
+    # range_fig, dist_fig = compare_range(
+    #     ha_df=ha_df,
+    #     sequences=[sequence1["Event id"], sequence2],
+    #     compare_type=compare_type,
+    #     arrangement='fad',
+    #     show_taxon_names=False,
+    #     sequence_names=sequence_names,
+    #     colors=['#f07167', '#0081a7'],
+    #     legend_loc='upper left'
+    # )
+    # range_fig.savefig("paper_figs/DYY2_taxon_range.svg")
+    # dist_fig.savefig("paper_figs/DYY2_taxon_range_distr.svg")
 
     ## jxfan data
     ha_path = r"paper_data/jxfan/HORSE.csv"

@@ -15,8 +15,7 @@ def find_fad_lad(mat: np.ndarray):
 
 
 @jit(nopython=True)
-def compute_penalty(new_indices: np.ndarray, ori_mat: np.ndarray,
-                    ori_spans=np.array([]), span_penalty_rate=1, teaser_rate=0.0):
+def compute_penalty(new_indices: np.ndarray, ori_mat: np.ndarray, teaser_rate=0.0):
     new_mat = ori_mat[new_indices]  # the occurrence data according to the new indices
     one_mat = new_mat == 1
     zero_mat = new_mat == 0
@@ -27,57 +26,18 @@ def compute_penalty(new_indices: np.ndarray, ori_mat: np.ndarray,
     first_one_indices = np.argmax(one_mat, axis=0)
     last_one_indices = new_mat.shape[0] - np.argmax(one_mat[::-1, :], axis=0) - 1
 
-    # with span
-    if len(ori_spans) > 0:
-        spans = ori_spans[new_indices]
-        # use spans to look for minimum ranges of first-last 1-pairs
-        first_one_indices = first_one_indices + spans[first_one_indices]
-        last_one_indices = last_one_indices - spans[last_one_indices]
-
-        # build span matrix to look for the span of zero horizons
-        span_matrix = np.array([list(spans)] * zero_mat.shape[1]).T
-        zero_loc = np.where(zero_mat)
-
-        # numba expression, equivalent to zero_spans = span_matrix[zero_loc[0], zero_loc[1]]
-        zero_spans = np.empty_like(zero_loc[0])
-        for i in range(len(zero_loc[0])):
-            zero_spans[i] = span_matrix[zero_loc[0][i], zero_loc[1][i]]
-
-        # lowest and highest zero positions for related horizons
-        min_zero_indices = zero_loc[0] - zero_spans
-        max_zero_indices = zero_loc[0] + zero_spans
-        # ones location of corresponding taxon
-        first_one_indices = first_one_indices[zero_loc[1]]
-        last_one_indices = last_one_indices[zero_loc[1]]
-        # those 0s that are out of the range are not considered in penalty
-        min_lower_than_first = min_zero_indices < first_one_indices
-        max_higher_than_last = max_zero_indices > last_one_indices
-        min_zero_indices[min_lower_than_first] = first_one_indices[min_lower_than_first]
-        max_zero_indices[max_higher_than_last] = last_one_indices[max_higher_than_last]
-        # first compute the raw penalty, then exclude out-of-range zeros
-        raw_penalty = max_zero_indices - min_zero_indices + 1
-        raw_penalty[raw_penalty < 0] = 0
-        penalty = raw_penalty.sum()
-
-        if span_penalty_rate > 0:
-            penalty += int(span_penalty_rate * spans.sum())
-
-        return penalty
-
-    # without span
+    # only count those zeros within the 1-bounded range
+    mask = (np.arange(new_mat.shape[0]).reshape((-1, 1)) >= first_one_indices) & (
+            np.arange(new_mat.shape[0]).reshape((-1, 1)) <= last_one_indices)
+    zero_indices = zero_mat & mask
+    zero_penalty = np.sum(zero_indices)
+    if teaser_rate > 0:
+        minus_one_indices = minus_one_mat & mask
+        minus_one_penalty = np.sum(minus_one_indices) * teaser_rate
+        penalty = zero_penalty + minus_one_penalty
     else:
-        # only count those zeros within the 1-bounded range
-        mask = (np.arange(new_mat.shape[0]).reshape((-1, 1)) >= first_one_indices) & (
-                np.arange(new_mat.shape[0]).reshape((-1, 1)) <= last_one_indices)
-        zero_indices = zero_mat & mask
-        zero_penalty = np.sum(zero_indices)
-        if teaser_rate > 0:
-            minus_one_indices = minus_one_mat & mask
-            minus_one_penalty = np.sum(minus_one_indices) * teaser_rate
-            penalty = zero_penalty + minus_one_penalty
-        else:
-            penalty = zero_penalty
-        return penalty
+        penalty = zero_penalty
+    return penalty
 
 
 def build_event_seq(mat: np.ndarray, taxa_names, event_id_dict):
