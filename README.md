@@ -27,4 +27,4 @@ Generates artificial datasets for computational testing:
 - Creates synthetic data for HORSE and HA algorithm evaluation
 
 ### utils.py
-Contains utility functions used by the other scripts.
+- Contains utility functions used by the other scripts.
